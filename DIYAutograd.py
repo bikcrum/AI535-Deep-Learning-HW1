@@ -54,9 +54,16 @@ class Variable:
             ###################################
             # Q6 Finish Backpropagation Code
             ###################################
-            dy_dparent = parent.grad
 
-            # TODO : Update children gradients
+            # # TODO : Update children gradients (done)
+
+            if not n.children:
+                continue
+
+            child_grads = n.func.backward(None, n.children)
+
+            for i in range(len(n.children)):
+                n.children[i].grad += child_grads[i] * n.grad
 
     def nodeName(self):
         if self.func != None:
@@ -91,7 +98,7 @@ class Variable:
                 if c not in visited:
                     visited.add(c.id)
                     G.add_node(c.id, txtlabel=c.nodeName(), terminal=c.func == None)
-                G.add_edge(c.id, active.id, label=str(np.round(c.value, 3)))
+                G.add_edge(c.id, active.id, label=f'{str(np.round(c.value, 3))}\n{c.grad}')
 
         # Draw computation graph
         edge_labels = nx.get_edge_attributes(G, 'label')
@@ -155,6 +162,7 @@ class Variable:
     def __truediv__(self, other):
         return Prod.forward(self, Inv.forward(other))
 
+    @staticmethod
     def convert(a):
         # If not a Variable, assume a constant and try to convert to one.
         if not isinstance(a, Variable):
@@ -170,38 +178,50 @@ class Variable:
 class Inv:
     label = "inv"
 
+    @staticmethod
     def forward(a):
+        # TODO (done)
+        a = Variable.convert(a)
+        return Variable(1 / a.value, [a], Inv)
 
-    # TODO
-
+    @staticmethod
     def backward(parent, children):
+        # TODO (done)
+        # [d(1/a)/da=-a^(-2)]
+        return [-children[0].value ** -2]
 
-
-# TODO
 
 # Forward: a,b -> a+b
 class Add:
     label = "+"
 
+    @staticmethod
     def forward(a, b):
+        # TODO (done)
+        a = Variable.convert(a)
+        b = Variable.convert(b)
+        return Variable(a.value + b.value, [a, b], Add)
 
-    # TODO
-
+    @staticmethod
     def backward(parent, children):
+        # TODO (done)
+        # [d(a+b)/da=1, d(a+b)/db=1]
+        return [1, 1]
 
-
-# TODO
 
 # Forward: a,b -> a*b
 class Prod:
     label = "*"
 
+    @staticmethod
     def forward(a, b):
         a = Variable.convert(a)
         b = Variable.convert(b)
         return Variable(a.value * b.value, [a, b], Prod)
 
+    @staticmethod
     def backward(parent, children):
+        # [d(a*b)/da=b, d(a*b)/db=a]
         return [children[1].value, children[0].value]
 
 
@@ -209,28 +229,38 @@ class Prod:
 class Ln:
     label = "ln"
 
+    @staticmethod
     def forward(a):
+        # TODO (done)
+        a = Variable.convert(a)
+        return Variable(np.log(a.value), [a], Ln)
 
-    # TODO
-
+    @staticmethod
     def backward(parent, children):
-
-
-# TODO
+        # TODO (done)
+        # [d(ln(a))/da=1/a]
+        return [1 / children[0].value]
 
 
 # Forward: a,b -> a^b
 class Pow:
     label = "pow"
 
+    @staticmethod
     def forward(a, b):
+        # TODO (done)
+        a = Variable.convert(a)
+        b = Variable.convert(b)
+        return Variable(a.value ** b.value, [a, b], Pow)
 
-    # TODO
-
+    @staticmethod
     def backward(parent, children):
+        # TODO (done)
+        a = children[0].value
+        b = children[1].value
+        # [d(a^b)/da=b*a^(b-1), d(a^b)/db=ln(a)*a^b]
+        return np.array([b * a ** (b - 1), np.log(a) * (a ** b)])
 
-
-# TODO
 
 ######################################
 # Trig Functions
@@ -240,40 +270,52 @@ class Pow:
 class Sin:
     label = "sin"
 
+    @staticmethod
     def forward(a):
+        # TODO (done)
+        a = Variable.convert(a)
+        return Variable(np.sin(a.value), [a], Sin)
 
-    # TODO
-
+    @staticmethod
     def backward(parent, children):
+        # TODO (done)
+        # [d(sin(a))/da=cos(a)]
+        return [np.cos(children[0].value)]
 
-
-# TODO
 
 # Forward: a -> cos(a)
 class Cos:
     label = "cos"
 
+    @staticmethod
     def forward(a):
+        # TODO (done)
+        a = Variable.convert(a)
+        return Variable(np.cos(a.value), [a], Cos)
 
-    # TODO
-
+    @staticmethod
     def backward(parent, children):
+        # TODO (done)
+        # [d(cos(a))/da=-sin(a)]
+        return [-np.sin(children[0].value)]
 
-
-# TODO
 
 # Forward: a -> tan(a)
 class Tan:
     label = "tan"
 
+    @staticmethod
     def forward(a):
+        # TODO (done)
+        a = Variable.convert(a)
+        return Variable(np.tan(a.value), [a], Tan)
 
-    # TODO
-
+    @staticmethod
     def backward(parent, children):
+        # TODO (done)
+        # [d(tan(a))/da=sec(a)^2] or [d(tan(a))/da=1 + tan(a)^2]
+        return [1 + np.tan(children[0].value) ** 2]
 
-
-# TODO
 
 ######################################
 # Max/Min Functions
@@ -283,27 +325,44 @@ class Tan:
 class Max:
     label = "max"
 
+    @staticmethod
     def forward(a, b):
+        # TODO (done)
+        a = Variable.convert(a)
+        b = Variable.convert(b)
+        return Variable(np.max([a.value, b.value]), [a, b], Max)
 
-    # TODO
-
+    @staticmethod
     def backward(parent, children):
+        # TODO (done)
+        a = children[0].value
+        b = children[1].value
+        # if a > b, [d(max(a,b)/da=da/da=1,d(max(a,b)/da=da/db=0]
+        # if a < b, [d(max(a,b)/da=db/da=0,d(max(a,b)/da=db/db=1]
+        # for a == b, it is not differentiable
+        return [1, 0] if a > b else [0, 1]
 
-
-# TODO
 
 # Forward: a,b -> min(a,b)
 class Min:
     label = "min"
 
+    @staticmethod
     def forward(a, b):
+        # TODO (done)
+        a = Variable.convert(a)
+        b = Variable.convert(b)
+        return Variable(np.min([a.value, b.value]), [a, b], Min)
 
-    # TODO
-
+    @staticmethod
     def backward(parent, children):
+        a = children[0].value
+        b = children[1].value
+        # if a > b, [d(min(a,b)/da=db/da=0,d(min(a,b)/da=db/db=1]
+        # if a < b, [d(min(a,b)/da=da/da=1,d(min(a,b)/da=da/db=0]
+        # for a == b, it is not differentiable
+        return [0, 1] if a > b else [1, 0]
 
-
-# TODO
 
 ######################################
 # Aliases to make coding cleaner
@@ -347,7 +406,8 @@ def functionUnitTests():
     # Exponential
     assert (Pow.forward(Variable(2), Variable(4)).value == 16)
     assert (Pow.forward(Variable(2), Variable(4)).func == Pow)
-    assert (Pow.backward(Variable(16), [Variable(2), Variable(4)]) == [32, 11.090354888959125])
+    assert (
+        np.all(np.array(Pow.backward(Variable(16), [Variable(2), Variable(4)])) == np.array([32, 11.090354888959125])))
 
     # Sin
     assert (Sin.forward(Variable(2)).value == np.sin(2))
@@ -367,12 +427,12 @@ def functionUnitTests():
     # Min
     assert (Min.forward(Variable(2), Variable(4)).value == 2)
     assert (Min.forward(Variable(2), Variable(4)).func == Min)
-    assert (Min.backward(Variable(2), [Variable(2), Variable(4)]) == [1, 0])
+    assert (np.all(np.array(Min.backward(Variable(2), [Variable(2), Variable(4)])) == np.array([1, 0])))
 
     # Max
     assert (Max.forward(Variable(2), Variable(4)).value == 4)
     assert (Max.forward(Variable(2), Variable(4)).func == Max)
-    assert (Max.backward(Variable(4), [Variable(2), Variable(4)]) == [0, 1])
+    assert (np.all(np.array(Max.backward(Variable(4), [Variable(2), Variable(4)])) == np.array([0, 1])))
 
 
 def backpropUnitTests():
