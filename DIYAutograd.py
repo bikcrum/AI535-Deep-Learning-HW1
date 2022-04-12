@@ -60,7 +60,7 @@ class Variable:
             if not n.children:
                 continue
 
-            child_grads = n.func.backward(None, n.children)
+            child_grads = n.func.backward(n, n.children)
 
             for i in range(len(n.children)):
                 n.children[i].grad += child_grads[i] * n.grad
