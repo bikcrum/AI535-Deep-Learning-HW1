@@ -23,9 +23,9 @@ def main():
         x2.value += 0.1 * x2.grad
         x1.grad = x2.grad = 0
 
-    # plt.figure(figsize=(15,7))
-    # y.drawGraph()
-    # plt.show()
+    plt.figure(figsize=(15,7))
+    y.drawGraph()
+    plt.show()
 
     print(x1, x2, y)
 
