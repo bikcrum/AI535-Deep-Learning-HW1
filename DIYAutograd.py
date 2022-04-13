@@ -259,7 +259,9 @@ class Pow:
         a = children[0].value
         b = children[1].value
         # [d(a^b)/da=b*a^(b-1), d(a^b)/db=ln(a)*a^b]
-        return np.array([b * a ** (b - 1), np.log(a) * (a ** b)])
+        # return np.array([b * a ** (b - 1), np.log(a) * (a ** b)])
+        # OR for faster execution
+        return np.array([b * parent.value / a, np.log(a) * parent.value])
 
 
 ######################################
@@ -314,7 +316,9 @@ class Tan:
     def backward(parent, children):
         # TODO (done)
         # [d(tan(a))/da=sec(a)^2] or [d(tan(a))/da=1 + tan(a)^2]
-        return [1 + np.tan(children[0].value) ** 2]
+        # return [1 + np.tan(children[0].value) ** 2]
+        # OR for faster execution
+        return [1 + parent.value ** 2]
 
 
 ######################################
