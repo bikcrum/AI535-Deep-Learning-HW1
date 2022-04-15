@@ -126,16 +126,18 @@ initial text=$ $, % sets the text that appears on the start arrow
     If A and B are positive definite then by definition we can say,
     \begin{equation}
     \begin{split}
-        & x^{T}Ax > 0, \forall x \in \R^{n} \\
-        & y^{T}Ay > 0, \forall y \in \R^{n} \\
+        & x^{T}Ax > 0 \forall x \in \R^{n} \\
+        & y^{T}By > 0 \forall y \in \R^{n} \\
     \end{split}
     \end{equation}
-    If we add these equation, the inequalities still holds true, therefore we have,
+   Let z be formed by using $x$ and $y$ as follows,
     \begin{equation}
     \begin{split}
-        & x^{T}Ax + y^{T}Ay > 0, \forall x \in \R^{n} \\
-        & \left[\begin{array}{c c} x \\ y \end{array} \right]^T\left[\begin{array}{c c} A  &0 \\ 0 &B \end{array} \right]\left[\begin{array}{c c} x \\ y \end{array} \right] > 0 \\
-        & z^T\left[\begin{array}{c c} A  &0 \\ 0 &B \end{array} \right]z > 0 \hspace{2em}  [z=\left[\begin{array}{c c} x \\ y \end{array} \right]].
+        \text{Let,} & \hspace{2em} z = \left[\begin{array}{c c} x \\ y \end{array} \right]\\
+        \text{Compute,} & \hspace{2em} z^T\left[\begin{array}{c c} A  &0 \\ 0 &B \end{array} \right]z \\
+        & = \left[\begin{array}{c c} x \\ y \end{array} \right]^T\left[\begin{array}{c c} A  &0 \\ 0 &B \end{array} \right]\left[\begin{array}{c c} x \\ y \end{array} \right] \\
+        & = x^{T}Ax + y^{T}By \\
+        & > 0 \hspace{2em} \text{[From equation 5]} \\ 
     \end{split}
     \end{equation}
     It is clear that if $\forall x \in \R^{n}$ and  $\forall y \in \R^{n}$ then $\forall z \in \R^{2 \times n}$. Hence, given matrix is also a positive definite.
@@ -164,7 +166,7 @@ initial text=$ $, % sets the text that appears on the start arrow
             \Rightarrow \frac{\delta^2f}{\delta x_1^2} & = 2x_2 + 2x_2^2 \\
             \Rightarrow \frac{\delta^2f}{\delta x_1x_2} & = 2x_1 + 4x_1x_2 + 2x_2 + 3x_2^2 \\
             \Rightarrow \frac{\delta^2f}{\delta x_2x_1} & = 2x_1 + 4x_1x_2 + 2x_2 + 3x_2^2 \\
-            \Rightarrow \frac{\delta^2f}{\delta x_2^2} & = 2x_1 + 2x_1 + 6x_1x_2 \\
+            \Rightarrow \frac{\delta^2f}{\delta x_2^2} & = 2x_1 + 2x_1^2 + 6x_1x_2 \\
         \end{split}
     \end{equation}
     Therefore,
@@ -178,7 +180,7 @@ initial text=$ $, % sets the text that appears on the start arrow
     \begin{equation}
         \begin{split}
           Hessian \nabla^2f(x) & = \left[\begin{array}{c c} \frac{\delta^2f}{\delta x_1^2} &\frac{\delta^2f}{\delta x_1x_2}  \\  \frac{\delta^2f}{\delta x_2x_1}  &\frac{\delta^2f}{\delta x_2^2} \end{array} \right] \\
-          Hessian \nabla^2f(x) & = \left[\begin{array}{c c} 2x_2 + 2x_2^2  &2x_1 + 4x_1x_2 + 2x_2 + 3x_2^2  \\  2x_1 + 4x_1x_2 + 2x_2 + 3x_2^2  &2x_1 + 2x_2 + 6x_1x_2 \end{array} \right]
+          Hessian \nabla^2f(x) & = \left[\begin{array}{c c} 2x_2 + 2x_2^2  &2x_1 + 4x_1x_2 + 2x_2 + 3x_2^2  \\  2x_1 + 4x_1x_2 + 2x_2 + 3x_2^2  &2x_1 + 2x_1^2 + 6x_1x_2 \end{array} \right]
         \end{split}
     \end{equation}
     To compute the stationary points of this function, let's equate gradient to zero and find $x_1$, $x_2$, and f(x) for each.
@@ -188,7 +190,7 @@ initial text=$ $, % sets the text that appears on the start arrow
           & \Rightarrow \left[\begin{array}{c c} 2x_1x_2 + 2x_1x_2^2 + x_2^2 + x_2^3 \\ x_1^2 + 2x_1^2x_2 + 2x_1x_2 + 3x_1x_2^2 \end{array} \right] = 0 \\
         \end{split}
     \end{equation}
-    To solve this non-linear equation, let's get rid of higher order variables 
+    To solve this non-linear equation, let's multiply first and second equation by $3x_1$ and $-x_2$ respectively,
     \begin{equation}
         \begin{split}
            & (2x_1x_2 + 2x_1x_2^2 + x_2^2 + x_2^3 = 0) \times 3x_1\\
@@ -202,21 +204,12 @@ initial text=$ $, % sets the text that appears on the start arrow
         \end{split}
     \end{equation}
     \begin{equation}
-        \Rightarrow x_1x_2 = 0 
+    \begin{split}
+        & \Rightarrow x_1x_2 = 0  \\
+         or & \Rightarrow 5x_1 + 4x_1x_2 + x_2 = 0 
+    \end{split}
     \end{equation}
-    or,
-    \begin{equation}
-        \Rightarrow 5x_1 + 4x_1x_2 + x_2 = 0 
-    \end{equation}
-    From equation 14, we can say $x_1 = 0$ and putting that in equation 15, we get $x_2 = 0$ which is our first solution. If we put $x_1 = 0$ in equation 12 (first equation), we get,
-    \begin{equation}
-        \begin{split}
-            & \Rightarrow x_2^2 + x_2^3 = 0 \\ 
-            & \Rightarrow x_2^2(1 + x_2) = 0 \\
-            & \Rightarrow x_2 = -1 \\
-        \end{split}
-    \end{equation}
-    which is our second solution. Again using equation 12, and getting rid of lower order variables, we get,
+    From equation 14, we can say $x_1 = 0$ and putting that in equation 15, we get $x_2 = 0$ which is our first solution, multiplying first and second equation by $-1/x_2$ and $2/x_1$ respectively, we get,
     \begin{equation}
         \begin{split}
            & (2x_1x_2 + 2x_1x_2^2 + x_2^2 + x_2^3 = 0) \times -1/x_2\\
@@ -245,13 +238,11 @@ initial text=$ $, % sets the text that appears on the start arrow
       \hline
       $x_1$ & $x_2$ & $f(x)$ & Hessian $\Delta^2f(x)$ & $Det(\text{Hessian} \Delta^2f(x))$ \\ 
       \hline
-      0 & -1 & 0 & $\left[\begin{array}{c c} 0  &1 \\ 1 &-2 \end{array} \right]$ & -1 \\ 
-      \hline
       0 & 0 & 0 & $\left[\begin{array}{c c} 0  &0 \\ 0 &0 \end{array} \right]$ & 0 \\ 
       \hline
-      $\frac{3}{8}$ &  $-\frac{6}{8}$ & $\frac{27}{1024}$ & $\left[\begin{array}{c c} -3/8  &-3/16 \\ -3/16 &-39/16 \end{array} \right]$ & 225/256 \\ 
+      $\frac{3}{8}$ &  $-\frac{6}{8}$ & $\frac{27}{1024}$ & $\left[\begin{array}{c c} -3/8  &-3/16 \\ -3/16 &-21/32 \end{array} \right]$ & 27/128 \\ 
       \hline
-      1 & -1 & 0 & $\left[\begin{array}{c c} 0  &-1 \\ -1 &-6 \end{array} \right]$ & -5\\ 
+      1 & -1 & 0 & $\left[\begin{array}{c c} 0  &-1 \\ -1 &-2 \end{array} \right]$ & -1\\ 
       \hline
     \end{tabular}
     \end{center}
@@ -283,7 +274,7 @@ initial text=$ $, % sets the text that appears on the start arrow
         \end{split}
     \end{equation}
     We can see we have only one stationary point. If we compute determinant of Hessian $\Delta^2 f(x)$, we get -8, which is negative and it means it is a saddle point.
-    \newpage
+    \\
     \begin{taskbox}
     \task{Q5 Graphs [5pts].}
     A \emph{topological order of a directed graph} $G=(V, E)$ is an ordering of its nodes such that for every edge $(v_i, v_j) \in E$, node $i$ appears in the ordering before node $j$. Prove that every directed acyclic graph (DAG) has a topological order. \\[5pt]
@@ -305,7 +296,7 @@ initial text=$ $, % sets the text that appears on the start arrow
     \end{itemize}
     This proves the hypothesis.
 \end{enumerate}
-
+\newpage
 \section{Automatic Differentiation with Dynamic Computation Graphs}
 \begin{enumerate}
    # Please refer to a code submission.
